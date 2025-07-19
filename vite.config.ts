@@ -30,7 +30,7 @@ export default defineConfig({
     preprocessorOptions: {
       // 这里可以配置sass的选项，例如全局变量、函数等
       scss: {
-        additionalData: '@import "@/styles/variable.scss";',
+        additionalData: '@use "@/styles/variable.scss" as *;',
       },
     },
   },
