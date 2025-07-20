@@ -1,5 +1,5 @@
-import { reqLogin, reqUserInfo } from '@/api/user'
-import type { loginForm, loginResponseData, userResponseData } from '@/api/user/type'
+import { reqLogin, reqUserInfo, reqLogout } from '@/api/user'
+import type { loginForm, loginResponseData, userResponseData, userInter } from '@/api/user/type'
 
 import { defineStore } from 'pinia'
 import { ref, reactive } from 'vue'
@@ -35,6 +35,9 @@ const useUserStore = defineStore('User', () => {
   const token = ref('')
   token.value = localStorage.getItem("TOKEN") || ''
   const menuRoutes = reactive(constantRoute)
+  // 获取用户信息
+  const userInfo = ref<userInter | null>(null)
+
   function userLogin(data: loginForm) {
     return new Promise((resolve, reject) => {
       reqLogin(data).then((result: loginResponseData) => {
@@ -50,7 +53,41 @@ const useUserStore = defineStore('User', () => {
       })
     })
   }
-  return { token, menuRoutes, userLogin }
+
+
+  function getUserInfo() {
+    return new Promise((resolve, reject) => {
+      reqUserInfo().then((res: userResponseData) => {
+        if (res.ok) {
+          userInfo.value = res.data
+          resolve('success')
+        } else {
+          reject(res.message)
+        }
+      }).catch((error) => {
+        reject(error)
+      })
+    })
+  }
+
+  // 退出登录
+  function userLogout() {
+    return new Promise((resolve, reject) => {
+      reqLogout().then((res) => {
+        if (res.ok) {
+          userInfo.value = null
+          localStorage.removeItem("TOKEN")
+          token.value = ''
+          resolve('success')
+        } else {
+          reject(res.message)
+        }
+      }).catch((error) => {
+        reject(error)
+      })
+    })
+  }
+  return { token, menuRoutes, userLogin, userInfo, getUserInfo, userLogout }
 })
 
 

@@ -37,12 +37,13 @@ import { ref, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import useUserStore from '@/store/modules/user'
 import type { loginForm, loginResponseData, userResponseData } from '@/api/user/type'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { debounce } from 'lodash-es'
 import { getTimeStr } from '@/utils/time'
 
 const router = useRouter()
+const $route = useRoute()
 const useUser = useUserStore()
 const loading = ref(false)
 // 添加表单实例引用
@@ -68,7 +69,7 @@ if (/^\d{5,10}$/.test(value)) {
   }
     */
 
-  console.log(rule)
+  // console.log(rule)
 
   if (value.length >= 5) {
     callback()
@@ -111,7 +112,9 @@ const handleLogin = async () => {
             message: '登录成功',
             title: getTimeStr(),
           })
-          router.push('/')
+          // 判断登录的时候，路由路径中是否有query参数，如果有就忘query参数跳转没有就跳转首页
+          let { redirect } = $route.query
+          router.push({ path: redirect || '/' })
         })
         .catch(error => {
           ElNotification({

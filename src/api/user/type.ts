@@ -4,15 +4,22 @@ export interface loginForm {
   password: string
 }
 
-// 登录接口返回的类型
-export interface loginResponseData {
+// 定义全部接口返回的类型
+export interface responseData {
   code?: number,
-  data?: string,
   message?: string,
   ok?: boolean
 }
 
-interface user {
+// 登录接口返回的类型
+export interface loginResponseData extends responseData {
+  data?: string
+}
+export interface logoutResponseData extends responseData {
+  data?: string | null
+}
+
+export interface userInter {
   name: string,
   routes: string[],
   buttons: string[],
@@ -21,9 +28,6 @@ interface user {
 }
 
 // 服务器返回用户信息相关类型
-export interface userResponseData {
-  code?: number,
-  data?: user,
-  message?: string,
-  ok?: boolean
+export interface userResponseData extends responseData {
+  data?: userInter
 }

@@ -3,18 +3,18 @@
     <el-button icon="Refresh" circle @click="refresh" />
     <el-button icon="FullScreen" circle @click="fullSreen" />
     <el-button icon="Setting" circle />
-    <el-avatar :size="32" :src="logo" style="margin: 0 12px" />
+    <el-avatar :size="32" :src="userStore.userInfo?.avatar || logo" style="margin: 0 12px" />
     <!-- 下拉 -->
     <el-dropdown>
       <span class="el-dropdown-link">
-        admin
+        {{ userStore.userInfo?.name || 'default' }}
         <el-icon class="el-icon--right">
           <arrow-down />
         </el-icon>
       </span>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item>退出</el-dropdown-item>
+          <el-dropdown-item @click="logout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
@@ -24,7 +24,13 @@
 <script lang="ts" setup>
 import logo from '@/assets/logo.png'
 import { useLayoutSettingStore } from '@/store/modules/setting'
+import useUserStore from '@/store/modules/user'
+import { onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 const layoutStore = useLayoutSettingStore()
+const userStore = useUserStore()
+const $router = useRouter()
+const $route = useRoute()
 
 const refresh = () => {
   layoutStore.refresh = true
@@ -39,6 +45,14 @@ const fullSreen = () => {
   } else {
     document.exitFullscreen()
   }
+}
+
+const logout = () => {
+  userStore.userLogout().then(res => {
+    // if (res === 'success') {
+    // }
+    $router.push({ path: '/login', query: { redirect: $route.path } })
+  })
 }
 </script>
 
