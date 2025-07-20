@@ -12,7 +12,10 @@ let request = axios.create({
 // 2 request实例添加请求与响应拦截器
 request.interceptors.request.use((config) => {
   // config配置对象，headers属性请求头，经常给服务器端携带公共参数
-
+  const token = localStorage.getItem('TOKEN')
+  if (token) {
+    config.headers['token'] = token
+  }
   // 返回配置对象
   return config
 })

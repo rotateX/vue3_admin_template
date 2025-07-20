@@ -7,9 +7,10 @@ import App from './App.vue'
 // 国际化配置
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
+import pinia from './store'
+
 import router from './router'
 
-import pinia from './store'
 
 // console.log(import.meta.env);
 
@@ -37,9 +38,10 @@ import '@/styles/index.scss'
 
 
 
-app.use(router);
-
 app.use(pinia)
 
+app.use(router);
+
+import './permisstion'
 // svg插件需要
 app.mount('#app')
